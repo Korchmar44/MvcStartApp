@@ -14,6 +14,9 @@
             // Используем асинхронную запись в файл
             await File.AppendAllTextAsync(logFilePath, logMessage);
 
+            // Для логирования данных о запросе используем свойста объекта HttpContext
+            Console.WriteLine($"[{DateTime.Now}]: New request to http://{context.Request.Host.Value + context.Request.Path}");
+
             // Передача запроса далее по конвейеру
             await next.Invoke(context);
         }
