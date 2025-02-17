@@ -2,6 +2,8 @@ using CoreStartApp.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MvcStartApp;
+using MvcStartApp.Repositories;
+using MvcStartApp.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddControllersWithViews();
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(connection));
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
 var app = builder.Build();
 
