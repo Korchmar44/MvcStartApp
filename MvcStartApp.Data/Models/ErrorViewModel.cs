@@ -1,4 +1,4 @@
-namespace MvcStartApp.Models
+﻿namespace MvcStartApp.Data.Models
 {
     public class ErrorViewModel
     {

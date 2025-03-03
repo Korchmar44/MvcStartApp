@@ -6,4 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\lib\**" />
+    <Content Remove="wwwroot\lib\lib\**" />
+    <EmbeddedResource Remove="wwwroot\lib\lib\**" />
+    <None Remove="wwwroot\lib\lib\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MvcStartApp.Data\MvcStartApp.Data.csproj" />
+  </ItemGroup>
+
 </Project>
