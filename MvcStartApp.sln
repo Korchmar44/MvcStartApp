@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35521.163 d17.12
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcStartApp", "MvcStartApp\MvcStartApp.csproj", "{0E9FDF60-CF61-4BC3-B0A1-4F4E8ABB5623}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcStartApp.Data", "MvcStartApp.Data\MvcStartApp.Data.csproj", "{BADA7646-93D7-46C5-9D1F-5F6E565EED41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "AuthenticationService\AuthenticationService.csproj", "{1128C673-D077-4983-A818-2FBF7F9DF5CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BADA7646-93D7-46C5-9D1F-5F6E565EED41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BADA7646-93D7-46C5-9D1F-5F6E565EED41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BADA7646-93D7-46C5-9D1F-5F6E565EED41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1128C673-D077-4983-A818-2FBF7F9DF5CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1128C673-D077-4983-A818-2FBF7F9DF5CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1128C673-D077-4983-A818-2FBF7F9DF5CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1128C673-D077-4983-A818-2FBF7F9DF5CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
