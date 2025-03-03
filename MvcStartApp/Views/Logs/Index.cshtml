@@ -1,0 +1,52 @@
+﻿@using MvcStartApp.Data.Models.Db
+@{
+    ViewData["Title"] = "View project logs";
+    var requests = Model as IEnumerable<Request>; // Приведение к ожидаемому типу
+    var orderedRequests = requests?.OrderByDescending(r => r.Date) ?? Enumerable.Empty<Request>();
+}
+
+<style>
+    table {
+        border-spacing: 0 15px;
+        align-self: center;
+        margin: 0 auto; /* Центрирование таблицы */
+    }
+
+    th {
+        background-color: #4287f5;
+        color: white;
+    }
+
+    th,
+    td {
+        width: 250px;
+        text-align: center;
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+    h2 {
+        color: #4287f5;
+        text-align: center; /* Центрирование заголовка, если нужно */
+    }
+</style>
+
+<div class="text-center">
+    <h2 class="display-4" style="text-align: center">Логи</h2>
+    <br>
+    <table>
+        <tr>
+            <td>Идентификатор</td>
+            <td>Дата</td>
+            <td>Адрес</td>
+        </tr>
+        @foreach (var request in orderedRequests)
+        {
+            <tr>
+                <td>@request.Id</td>
+                <td>@request.Date</td>
+                <td>@request.Url</td>
+            </tr>
+        }
+    </table>
+</div>
