@@ -1,5 +1,7 @@
 using AuthenticationService;
 using AuthenticationService.Interfaces;
+using AuthenticationService.Repositories.Interface;
+using AuthenticationService.Repositories.Repository;
 using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ILoggerApp, Logger>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
 
 var mapperConfig = new MapperConfiguration((v) =>
     {

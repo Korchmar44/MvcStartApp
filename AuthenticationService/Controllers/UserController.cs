@@ -1,5 +1,6 @@
 ﻿using AuthenticationService.Interfaces;
 using AuthenticationService.Models;
+using AuthenticationService.Repositories.Interface;
 using AuthenticationService.ViewModel;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -12,28 +13,25 @@ namespace AuthenticationService.Controllers
     {
         private IMapper _mapper;
         private ILoggerApp _logger;
-        public UserController(ILoggerApp logger, IMapper mapper)
+        private readonly IUserRepository _userRepository; // Добавим зависимость от IUserRepository
+        public UserController(ILoggerApp logger, IMapper mapper, IUserRepository userRepository)
         {
             _logger = logger;
             _mapper = mapper;
+            _userRepository = userRepository;
 
             logger.WriteEvent("Сообщение о событии в программе");
             logger.WriteError("Сообщение об ошибки в программе");
         }
 
-        [HttpGet]
-        public User GetUser()
-        {
-            return new User
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Denis",
-                LastName = "Golubev",
-                Login = "korchmar44",
-                Email = "amigo36@mail.ru",
-                Password = "Password"
-            };
-        }
+        //[HttpGet]
+        //public ActionResult<User> GetUser()
+        //{
+        //    // Используем репозиторий для получения пользователя, если необходимо
+        //User? user = _userRepository.GetAll().FirstOrDefault(); // Пример получения пользоваетя из репозитория
+
+        //    return user is not null ? Ok(user) : NotFound(); // Возвращаем 404, если пользователь не найден
+        //}
 
         [HttpGet]
         [Route("viewmodel")]
@@ -52,6 +50,24 @@ namespace AuthenticationService.Controllers
             var userViewModel = _mapper.Map<UserViewModel>(user);
 
             return userViewModel;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<User>> GetAll()
+        {
+            var users = _userRepository.GetAll();
+            return Ok(users);
+        }
+
+        [HttpGet("{login}")]
+        public ActionResult<User> GetByLogin(string login)
+        {
+            var user = _userRepository.GetByLogin(login);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
     }
 }
