@@ -75,33 +75,41 @@ namespace AuthenticationService.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        [Route("authenticate")]
-        public async Task<UserViewModel> Authenticate(string login, string password)
+        [HttpPost] 
+        [Route("authenticate")] 
+        public async Task<UserViewModel> Authenticate(string login, string password) 
         {
-            if (String.IsNullOrEmpty(login) ||String.IsNullOrEmpty(password))
-                throw new ArgumentNullException("Запрос не корректен");
+            // Проверка на пустые значения логина и пароля. Если одно из значений пустое, выбрасывается исключение.
+            if (String.IsNullOrEmpty(login) || String.IsNullOrEmpty(password))
+                throw new ArgumentNullException("Запрос не корректен"); // Исключение, если запрос некорректен
 
+            // Получение объекта пользователя из репозитория по логину
             User? user = _userRepository.GetByLogin(login);
+            // Проверка, найден ли пользователь. Если нет, выбрасываем исключение.
             if (user == null)
-                throw new AuthenticationException("Пользователь не найден");
+                throw new AuthenticationException("Пользователь не найден"); // Исключение, если пользователь не найден
 
-            if(!await _userRepository.ValidatePassword(user, password))
-                throw new AuthenticationException("Введенный пароль не корректен");
+            // Проверка, корректен ли введённый пароль
+            if (!await _userRepository.ValidatePassword(user, password))
+                throw new AuthenticationException("Введенный пароль не корректен"); // Исключение, если пароль некорректен
 
+            // Создание списка утверждений (claims) для аутентификации
             var claims = new List<Claim>
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, login)
-            };
+    {
+        new Claim(ClaimsIdentity.DefaultNameClaimType, login) // Добавление утверждения с логином пользователя
+    };
 
+            // Создание объекта ClaimsIdentity с указанными утверждениями и схемой аутентификации
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(
                 claims,
-                "AppCookie",
-                ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType);
+                "AppCookie", // Название схемы аутентификации
+                ClaimsIdentity.DefaultNameClaimType, // Тип имени
+                ClaimsIdentity.DefaultRoleClaimType); // Тип роли
 
+            // Подписание пользователя в системе с использованием куков
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-            return _mapper.Map<UserViewModel>(user);
+            // Маппинг объекта пользователя на представление пользователя и возврат результата
+            return _mapper.Map<UserViewModel>(user); // Возвращаем представление пользователя
         }
     }
 }
