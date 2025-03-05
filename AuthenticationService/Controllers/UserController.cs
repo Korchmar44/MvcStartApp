@@ -85,7 +85,8 @@ namespace AuthenticationService.Controllers
             User? user = _userRepository.GetByLogin(login);
             if (user == null)
                 throw new AuthenticationException("Пользователь не найден");
-            if (user.Password != password)
+
+            if(!await _userRepository.ValidatePassword(user, password))
                 throw new AuthenticationException("Введенный пароль не корректен");
 
             var claims = new List<Claim>

@@ -6,5 +6,6 @@ namespace AuthenticationService.Repositories.Interface
     {
         IEnumerable<User> GetAll();
         User? GetByLogin(string login);
+        Task<bool> ValidatePassword(User user, string password);
     }
 }
