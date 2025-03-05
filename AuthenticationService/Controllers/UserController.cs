@@ -3,7 +3,12 @@ using AuthenticationService.Models;
 using AuthenticationService.Repositories.Interface;
 using AuthenticationService.ViewModel;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Authentication;
+using System.Security.Claims;
 
 namespace AuthenticationService.Controllers
 {
@@ -32,7 +37,7 @@ namespace AuthenticationService.Controllers
 
         //    return user is not null ? Ok(user) : NotFound(); // Возвращаем 404, если пользователь не найден
         //}
-
+        [Authorize]
         [HttpGet]
         [Route("viewmodel")]
         public UserViewModel GetUserViewModel()
@@ -68,6 +73,34 @@ namespace AuthenticationService.Controllers
                 return NotFound();
             }
             return Ok(user);
+        }
+
+        [HttpPost]
+        [Route("authenticate")]
+        public async Task<UserViewModel> Authenticate(string login, string password)
+        {
+            if (String.IsNullOrEmpty(login) ||String.IsNullOrEmpty(password))
+                throw new ArgumentNullException("Запрос не корректен");
+
+            User? user = _userRepository.GetByLogin(login);
+            if (user == null)
+                throw new AuthenticationException("Пользователь не найден");
+            if (user.Password != password)
+                throw new AuthenticationException("Введенный пароль не корректен");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, login)
+            };
+
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                claims,
+                "AppCookie",
+                ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            return _mapper.Map<UserViewModel>(user);
         }
     }
 }
