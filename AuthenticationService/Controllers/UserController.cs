@@ -29,28 +29,12 @@ namespace AuthenticationService.Controllers
             logger.WriteError("Сообщение об ошибки в программе");
         }
 
-        //[HttpGet]
-        //public ActionResult<User> GetUser()
-        //{
-        //    // Используем репозиторий для получения пользователя, если необходимо
-        //User? user = _userRepository.GetAll().FirstOrDefault(); // Пример получения пользоваетя из репозитория
-
-        //    return user is not null ? Ok(user) : NotFound(); // Возвращаем 404, если пользователь не найден
-        //}
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("viewmodel")]
-        public UserViewModel GetUserViewModel()
+        public UserViewModel GetUserViewModel(string login)
         {
-            User user = new User()
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Denis",
-                LastName = "Golubev",
-                Login = "korchmar44",
-                Email = "amigo36@mail.ru",
-                Password = "Password"
-            };
+            var user = _userRepository.GetByLogin(login);
 
             var userViewModel = _mapper.Map<UserViewModel>(user);
 
@@ -85,6 +69,7 @@ namespace AuthenticationService.Controllers
 
             // Получение объекта пользователя из репозитория по логину
             User? user = _userRepository.GetByLogin(login);
+
             // Проверка, найден ли пользователь. Если нет, выбрасываем исключение.
             if (user == null)
                 throw new AuthenticationException("Пользователь не найден"); // Исключение, если пользователь не найден
@@ -95,9 +80,10 @@ namespace AuthenticationService.Controllers
 
             // Создание списка утверждений (claims) для аутентификации
             var claims = new List<Claim>
-    {
-        new Claim(ClaimsIdentity.DefaultNameClaimType, login) // Добавление утверждения с логином пользователя
-    };
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login), // Добавление утверждения с логином пользователя
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.UserRole.Name) // Добавление утверждения с ролью пользователя
+            };
 
             // Создание объекта ClaimsIdentity с указанными утверждениями и схемой аутентификации
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(
