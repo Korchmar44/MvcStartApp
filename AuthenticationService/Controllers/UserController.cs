@@ -1,6 +1,8 @@
 ﻿using AuthenticationService.Interfaces;
+using AuthenticationService.Middleware;
 using AuthenticationService.Models;
 using AuthenticationService.Repositories.Interface;
+using AuthenticationService.Service.CustomException;
 using AuthenticationService.ViewModel;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -12,21 +14,19 @@ using System.Security.Claims;
 
 namespace AuthenticationService.Controllers
 {
+    [ExceptionHandler]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
         private IMapper _mapper;
-        private ILoggerApp _logger;
+        ILogger<LogMiddleware> _logger;
         private readonly IUserRepository _userRepository; // Добавим зависимость от IUserRepository
-        public UserController(ILoggerApp logger, IMapper mapper, IUserRepository userRepository)
+        public UserController(ILogger<LogMiddleware> logger, IMapper mapper, IUserRepository userRepository)
         {
             _logger = logger;
             _mapper = mapper;
             _userRepository = userRepository;
-
-            logger.WriteEvent("Сообщение о событии в программе");
-            logger.WriteError("Сообщение об ошибки в программе");
         }
 
         [Authorize(Roles = "Admin")]

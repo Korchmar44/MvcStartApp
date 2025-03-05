@@ -1,5 +1,6 @@
 using AuthenticationService;
 using AuthenticationService.Interfaces;
+using AuthenticationService.Middleware;
 using AuthenticationService.Repositories.Interface;
 using AuthenticationService.Repositories.Repository;
 using AutoMapper;
@@ -7,6 +8,7 @@ using AutoMapper;
 var builder = WebApplication.CreateBuilder(args); // Создание строителя веб-приложения
 
 // Добавление сервисов в контейнер зависимостей
+builder.Services.AddLogging();
 builder.Services.AddControllers(); // Добавление поддержки контроллеров
 builder.Services.AddEndpointsApiExplorer(); // Добавление поддержки исследования конечных точек API
 builder.Services.AddSwaggerGen(); // Добавление Swagger для генерации документации API
@@ -42,6 +44,8 @@ if (app.Environment.IsDevelopment()) // Проверка, является ли среда разработки
     app.UseSwagger(); // Включение Swagger
     app.UseSwaggerUI(); // Включение пользовательского интерфейса Swagger
 }
+
+app.UseMiddleware<LogMiddleware>();
 
 app.UseRouting(); // Включение маршрутизации
 
